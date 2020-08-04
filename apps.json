@@ -1,0 +1,38 @@
+{
+  "apps":[
+    {
+      "name":"api",
+      "script":"./apps/api.js",
+      "instances":4,
+      "exec_mode":"cluster"
+    },
+    {
+      "name":"scheduler",
+      "script":"./apps/scheduler.js",
+      "env":{
+        "NODE_ENV":"development",
+        "WORKER_NAME": "SCHEDULER",
+        "ITERATION_INTERVAL": 3000
+      },
+      "env_production":{
+        "NODE_ENV":"production",
+        "WORKER_NAME": "SCHEDULER",
+        "ITERATION_INTERVAL": 3000
+      }
+    },
+    {
+      "name":"messenger",
+      "script":"./apps/messenger.js",
+      "env":{
+        "NODE_ENV":"development",
+        "WORKER_NAME": "MESSENGER",
+        "ITERATION_INTERVAL": 5000
+      },
+      "env_production":{
+        "NODE_ENV":"production",
+        "WORKER_NAME": "MESSENGER",
+        "ITERATION_INTERVAL": 5000
+      }
+    }
+  ]
+}
