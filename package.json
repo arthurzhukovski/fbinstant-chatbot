@@ -3,16 +3,21 @@
   "version": "1.0.0",
   "description": "Server side app that serves the purpose of generating, scheduling and sending push notifications to the users of the apps powered by FB Instant Games platform",
   "main": "index.js",
+  "mocha": {
+    "spec": "./tests/unit"
+  },
   "scripts": {
     "start": "pm2 start apps.json && pm2 logs",
     "dev": "pm2 start apps.json --watch && pm2 logs",
     "stop": "pm2 delete all",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:unit": "mocha"
   },
   "author": "Arthur Zhukovski",
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1",
     "pm2": "^4.4.0"
   }
 }
