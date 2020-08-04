@@ -14,5 +14,8 @@ class Worker{
         }, this.intervalInMs);
     }
 
+    stop(){
+        clearInterval(this.interval);
+    }
 }
 module.exports = Worker;

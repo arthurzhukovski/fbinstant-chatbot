@@ -11,6 +11,10 @@ class APIServer {
         this.httpServer.listen(this.port, () => console.log('Web server is up and running!'));
     }
 
+    stop(){
+        this.httpServer.close(() => console.log('Web server has been stopped'));
+    }
+
     setRouteHandlers(){
         this.httpServer.on('request', (req, res) => {
             console.log(`API server handled request: ${req.url}`);
