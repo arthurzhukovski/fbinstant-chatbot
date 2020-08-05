@@ -1,6 +1,7 @@
+const MILLISECONDS_PER_SECOND = 1000;
+
 class Worker{
-    constructor(intervalInMs = 1000, processName){
-        this.millisecondsDenominator = 1000;
+    constructor(intervalInMs = MILLISECONDS_PER_SECOND, processName){
         this.intervalInMs = intervalInMs;
         this.name = processName || `WORKER_${Date.now()}`;
         this.mainLoopCallback = null;
@@ -9,13 +10,21 @@ class Worker{
     run(){
         console.log(`Worker ${this.name} is running!`);
         this.interval = setInterval(() => {
-            const iterationResult = this.mainLoopCallback();
-            console.log(`[${this.name}] at [${new Date().toISOString()}] (executed after ${this.intervalInMs/this.millisecondsDenominator} seconds): ${iterationResult}`);
+            this.mainLoopCallback().then((iterationResult)=>{
+                const message = this.formatMessage(iterationResult.message);
+                iterationResult.ok ? console.log(message) : console.error(message);
+            }).catch(error => {
+                console.error(this.formatMessage(error.message));
+            });
         }, this.intervalInMs);
     }
 
     stop(){
         clearInterval(this.interval);
+    }
+
+    formatMessage(message){
+        return `[${this.name}] at [${new Date().toISOString()}] (executed after ${this.intervalInMs/MILLISECONDS_PER_SECOND} seconds): ${message}`;
     }
 }
 module.exports = Worker;

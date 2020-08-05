@@ -12,12 +12,18 @@
       "env":{
         "NODE_ENV":"development",
         "WORKER_NAME": "SCHEDULER",
-        "ITERATION_INTERVAL": 3000
+        "ITERATION_INTERVAL": 5000,
+        "REDIS_HOST": "127.0.0.1",
+        "REDIS_PORT": 6379,
+        "NOTIFICATION_QUEUE_LIST_NAME": "notifications"
       },
       "env_production":{
         "NODE_ENV":"production",
         "WORKER_NAME": "SCHEDULER",
-        "ITERATION_INTERVAL": 3000
+        "ITERATION_INTERVAL": 5000,
+        "REDIS_HOST": "127.0.0.1",
+        "REDIS_PORT": 6379,
+        "NOTIFICATION_QUEUE_LIST_NAME": "notifications"
       }
     },
     {
@@ -26,12 +32,18 @@
       "env":{
         "NODE_ENV":"development",
         "WORKER_NAME": "MESSENGER",
-        "ITERATION_INTERVAL": 5000
+        "ITERATION_INTERVAL": 1000,
+        "REDIS_HOST": "127.0.0.1",
+        "REDIS_PORT": 6379,
+        "NOTIFICATION_QUEUE_LIST_NAME": "notifications"
       },
       "env_production":{
         "NODE_ENV":"production",
         "WORKER_NAME": "MESSENGER",
-        "ITERATION_INTERVAL": 5000
+        "ITERATION_INTERVAL": 1000,
+        "REDIS_HOST": "127.0.0.1",
+        "REDIS_PORT": 6379,
+        "NOTIFICATION_QUEUE_LIST_NAME": "notifications"
       }
     }
   ]
