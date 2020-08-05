@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const expect = require('chai').expect;
+
 const NotificationQueue = require('../../core/services/notification-queue');
 const RedisClient = require('redis').RedisClient;
 
