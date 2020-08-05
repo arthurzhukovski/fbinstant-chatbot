@@ -6,6 +6,7 @@ class MessengerWorker extends Worker{
         super(intervalInMs, workerName);
         this.mainLoopCallback = this.messagingLoopIteration;
         this.notificationQueue = new NotificationQueue(process.env.REDIS_HOST, process.env.REDIS_PORT);
+        this.notificationQueue.init();
         this.listName = notificationListName;
     }
 

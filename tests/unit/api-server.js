@@ -8,7 +8,7 @@ describe('APIServer', function () {
     it('APIServer.run() should start listening for incoming connections', function () {
         apiServer.run();
         http.get("http://localhost:54321/", function(response) {
-            assert.equal(response.statusCode, 200)
+            assert.equal(response.statusCode, 200);
         })
     });
 
@@ -16,7 +16,7 @@ describe('APIServer', function () {
         apiServer.stop();
             http.get("http://localhost:54321/", function() {
             }).on("error", error => {
-                assert.equal(error.code, 'ECONNREFUSED')
+                assert.equal(error.code, 'ECONNREFUSED');
             });
     });
 });

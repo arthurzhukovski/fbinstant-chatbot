@@ -3,7 +3,12 @@ const promisify = require('util').promisify;
 
 class NotificationQueue {
     constructor(host = '127.0.0.1', port = 6379){
-        this.connectToRedis(host, port);
+        this.host = host;
+        this.port = port;
+    }
+
+    init(){
+        this.connectToRedis(this.host, this.port);
         this.setRedisConnectionStatusHandlers(this.redisClient);
         this.lpopWithPromise = promisify(this.redisClient.lpop).bind(this.redisClient);
         this.rpushWithPromise = promisify(this.redisClient.rpush).bind(this.redisClient);
@@ -13,8 +18,17 @@ class NotificationQueue {
         this.redisClient = redis.createClient(port, host);
     }
 
-    disconnectFromRedis(){
-        this.redisClient.quit();
+    async disconnectFromRedis(){
+        return (promisify(this.redisClient.quit).bind(this.redisClient))().then(result => {
+            if (result === 'OK'){
+                console.log('Successfully disconnected from Redis');
+                this.isUp = false;
+            }else{
+                console.error('Failed to close Redis connection');
+            }
+        }).catch(error => {
+            console.error(`Failed to close Redis connection: ${error}`);
+        });
     }
 
     async push(listName, notificationObject){
@@ -47,7 +61,7 @@ class NotificationQueue {
 
         client.on('error', function (error) {
             classContext.disconnectFromRedis();
-            console.error(`Failed connecting to redis: ${error}`);
+            console.error(`Failed connecting to Redis: ${error}`);
         });
 
         client.on('end', function () {
