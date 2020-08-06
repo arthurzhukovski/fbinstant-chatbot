@@ -17,7 +17,9 @@
   "devDependencies": {},
   "dependencies": {
     "chai": "^4.2.0",
+    "express": "^4.17.1",
     "mocha": "^8.1.1",
+    "mongoose": "^5.9.27",
     "pm2": "^4.4.0",
     "redis": "^3.0.2"
   }
