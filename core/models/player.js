@@ -1,17 +1,29 @@
 const mongoose = require('mongoose');
 
 const PlayerSchema = new mongoose.Schema({
+    instantId: {
+        type: String,
+        required: true,
+        unique: true
+    },
     name: {
-        type: 'string',
+        type: String,
         required: true
     },
-    age: {
+    avatar: {
+        type: String,
+        required: true
+    },
+    tzOffset: {
         type: 'number',
         required: true
     },
-    email: {
-        type: 'string',
+    locale: {
+        type: String,
         required: true
+    },
+    friends:{
+        type: [String]
     },
     createdAt: {
         type: Date,

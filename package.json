@@ -14,11 +14,13 @@
   },
   "author": "Arthur Zhukovski",
   "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
     "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "mocha": "^8.1.1"
+  },
+  "dependencies": {
     "express": "^4.17.1",
-    "mocha": "^8.1.1",
     "mongoose": "^5.9.27",
     "pm2": "^4.4.0",
     "redis": "^3.0.2"
