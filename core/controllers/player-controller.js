@@ -11,15 +11,16 @@ class PlayerController{
         }catch (error) {
             return res.status(400).json({ok: false, msg: `Parameter validation failed: ${error}`});
         }
-        this.playerService.createOrUpdatePlayer(playerDataFromClient).then(() => {
-            let responseObject = this.playerService.getPlayerAdditionalData();
+        this.playerService.createOrUpdatePlayer(playerDataFromClient).then((newPlayerObjectFromDb) => {
+            console.log(newPlayerObjectFromDb);
+            //let responseObject = this.playerService.getPlayerAdditionalData(playerDataFromClient.instantId);
             this.playerService.getFriendsByIdList(playerDataFromClient.friends).then(friends => {
-                responseObject.friends = friends;
+                newPlayerObjectFromDb.friends = friends;
             }).catch(error => {
                 console.error(`Failed to fetch player's friend list after upsert: ${error}`);
-                responseObject.friends = [];
+                newPlayerObjectFromDb.friends = [];
             }).finally(()=>{
-                res.json(responseObject);
+                res.json(newPlayerObjectFromDb);
             });
         }).catch(error => {
             console.error(`Failed to update player data: ${error}`);

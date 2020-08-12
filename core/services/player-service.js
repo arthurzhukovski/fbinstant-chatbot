@@ -3,34 +3,12 @@ const ParameterFetcher = require('../utils/parameter-fetcher');
 
 class PlayerService {
     async createOrUpdatePlayer(playerFields){
-        return Player.updateOne({ instantId: playerFields.instantId }, playerFields, { upsert: true });
-    }
-
-    getPlayerAdditionalData(instantId){
-        return {
-            score: this.getPlayerScore(instantId),
-            ads: this.shouldPlayerReceiveAds(instantId),
-            coins: this.getPlayerCoins(instantId)
-        };
+        const fieldsToReturn = {_id: 0, coins: 1, showAds: 1, score: 1};
+        return Player.findOneAndUpdate({ instantId: playerFields.instantId }, playerFields, { select: fieldsToReturn, upsert: true, new: true, lean: true, setDefaultsOnInsert: true });
     }
 
     getFriendsByIdList(instantIds){
-        return Player.find({instantId: {$in: instantIds}}, {_id: 0, instantId: 1, name: 1, avatar: 1});
-    }
-
-    getPlayerScore(instantId){
-        //todo: implement fetching of "score"
-        return 0;
-    }
-
-    getPlayerCoins(instantId){
-        //todo: implement fetching of "coins"
-        return 0;
-    }
-
-    shouldPlayerReceiveAds(instantId){
-        //todo: implement fetching of "ads"
-        return true;
+        return Player.find({instantId: {$in: instantIds && instantIds.length ? instantIds : []}}, {_id: 0, instantId: 1, name: 1, avatar: 1});
     }
 
     fetchPlayerDataFromRawInput(rawData){

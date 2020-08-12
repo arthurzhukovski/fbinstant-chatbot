@@ -14,7 +14,7 @@ class Worker{
                 const message = this.formatMessage(iterationResult.message);
                 iterationResult.ok ? console.log(message) : console.error(message);
             }).catch(error => {
-                console.error(this.formatMessage(error.message));
+                console.error(this.formatMessage(error));
             });
         }, this.intervalInMs);
     }

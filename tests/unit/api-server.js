@@ -3,20 +3,22 @@ const http = require('http');
 const APISever = require('../../core/api-server');
 
 describe('APIServer', function () {
+    this.timeout(5000);
     let apiServer = new APISever(54321);
 
-    it('APIServer.run() should start listening for incoming connections', function () {
+    it('APIServer.run() should start listening for incoming connections', function (done) {
         apiServer.run();
-        http.get("http://localhost:54321/", function(response) {
-            assert.equal(response.statusCode, 200);
-        })
+        setTimeout( () => {
+            assert.equal(apiServer.isUp, true);
+            done();
+        }, 1000)
     });
 
-    it('APIServer.stop() should make the web server stop listening for connections', function () {
+    it('APIServer.stop() should make the web server stop listening for connections', function (done) {
         apiServer.stop();
-            http.get("http://localhost:54321/", function() {
-            }).on("error", error => {
-                assert.equal(error.code, 'ECONNREFUSED');
-            });
+        setTimeout( () => {
+            assert.equal(apiServer.isUp, false);
+            done();
+        });
     });
 });

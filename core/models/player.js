@@ -14,6 +14,21 @@ const PlayerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    coins: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    score: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    showAds: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
     tzOffset: {
         type: 'number',
         required: true
