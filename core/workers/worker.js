@@ -12,7 +12,10 @@ class Worker{
         this.interval = setInterval(() => {
             this.mainLoopCallback().then((iterationResult)=>{
                 const message = this.formatMessage(iterationResult.message);
-                iterationResult.ok ? console.log(message) : console.error(message);
+                const logFunc = iterationResult.ok ? console.log : console.error;
+                if (message){
+                    logFunc(message);
+                }
             }).catch(error => {
                 console.error(this.formatMessage(error));
             });
@@ -24,7 +27,7 @@ class Worker{
     }
 
     formatMessage(message){
-        return `[${this.name}] at [${new Date().toISOString()}] (executed after ${this.intervalInMs/MILLISECONDS_PER_SECOND} seconds): ${message}`;
+        return !message ? false : `[${this.name}] at [${new Date().toISOString()}] (executed after ${this.intervalInMs/MILLISECONDS_PER_SECOND} seconds): ${message}`;
     }
 }
 module.exports = Worker;

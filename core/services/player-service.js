@@ -11,6 +11,10 @@ class PlayerService {
         return Player.find({instantId: {$in: instantIds && instantIds.length ? instantIds : []}}, {_id: 0, instantId: 1, name: 1, avatar: 1});
     }
 
+    getPlayer(instantId){
+        return Player.findOne({instantId: instantId}, {_id: 0});
+    }
+
     fetchPlayerDataFromRawInput(rawData){
         const possibleParams = {
             instantId: {type: 'string', required: true},

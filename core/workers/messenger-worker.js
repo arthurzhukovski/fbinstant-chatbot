@@ -17,7 +17,7 @@ class MessengerWorker extends Worker{
             if (messageObjectFromQueue){
                 result.message = `Successfully popped ${JSON.stringify(messageObjectFromQueue)} from list "${this.listName}"`;
             }else{
-                result.message = `Fetched empty result from list "${this.listName}"`;
+                result.message = false;
             }
         }else{
             result.ok = false;

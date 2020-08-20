@@ -1,10 +1,12 @@
 const WebhookService = require('../services/webhook-service');
 const ScheduleService = require('../services/schedule-service');
+const PlayerService = require('../services/player-service');
 
 class WebhookController {
     constructor(){
         this.webhookService = new WebhookService();
         this.scheduleService = new ScheduleService();
+        this.playerService = new PlayerService();
     }
     verify(req, res){
         try{
@@ -25,20 +27,35 @@ class WebhookController {
         }
     }
 
-    createOrUpdate(req, res){
+    async createOrUpdate(req, res){
         let webhookData;
         try {
             webhookData = this.webhookService.fetchAndValidateNewWebhookData(req.body);
         }catch (error) {
             res.status(400).json({ok: false, msg: `Input data validation failed: ${error.message}`});
         }
-        const newWebhook = {...webhookData, ...{hookedAt: Date.now(), sentAfterHook: 0, sendAt: this.scheduleService.getDefaultTimeToSendAt()}};
-        this.webhookService.createOrUpdateWebhook(newWebhook).then(() => {
-            res.status(200).end();
-        }).catch(error => {
+        //todo: determine how to properly connect player with webhook (currently it's assumed that webhookData.playerId equals target player's instantId)
+        let tzOffset;
+        try {
+            const player = await this.playerService.getPlayer(webhookData.playerId);
+            tzOffset = player ? player.tzOffset : 0;
+        }catch(error){
+            tzOffset = 0;
+            console.error(error);
+        }
+        try{
+            const newWebhook = {...webhookData, ...{hookedAt: Date.now(), sentAfterHook: 0, sendAt: this.scheduleService.getDefaultTimeToSendAt(tzOffset)}};
+
+            this.webhookService.createOrUpdateWebhook(newWebhook).then(() => {
+                res.status(200).end();
+            }).catch(error => {
+                console.error(`Failed to update webhook data: ${error}`);
+                res.status(502).json({ok: false, msg: `Failed to update webhook data`});
+            });
+        }catch (error) {
             console.error(`Failed to update webhook data: ${error}`);
             res.status(502).json({ok: false, msg: `Failed to update webhook data`});
-        });
+        }
     }
 }
 
