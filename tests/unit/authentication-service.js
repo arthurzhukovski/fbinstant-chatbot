@@ -8,8 +8,7 @@ describe('APIServer', function () {
 
     it('AuthenticationService.generateToken() should return a string', function () {
         const token = AuthenticationService.generateToken(payload);
-        assert.typeOf(token, 'string');
-        console.log(token);
+        assert.typeOf(token, 'string');;
     });
 
     it('AuthenticationService.generateToken() split by dot should return an array with a length of 2', function () {

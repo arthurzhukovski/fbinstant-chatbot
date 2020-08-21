@@ -32,7 +32,6 @@ class AuthenticationService{
 
     static generateToken(payload) {
         if(process.env.APP_SECRET){
-            console.log(process.env.APP_SECRET);
             const encodedPayload = Base64.stringify(Utf8.parse(JSON.stringify(payload)));
             const signature = this.base64ToWebSafe(Base64.stringify(HmacSHA256(encodedPayload, process.env.APP_SECRET)));
             return `${signature}.${encodedPayload}`;

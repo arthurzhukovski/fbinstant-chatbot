@@ -1,5 +1,4 @@
 const Webhook = require('../models/webhook');
-const ParameterFetcher = require('../utils/parameter-fetcher');
 
 class WebhookService{
     verifyHook(verificationToken, params){
@@ -17,6 +16,10 @@ class WebhookService{
         }else{
             throw new Error(`No required parameters were provided`);
         }
+    }
+
+    getWebhooksForSending(limit, dateObjectToFilter){
+        return Webhook.find({sendAt: {$lte: dateObjectToFilter.getTime()}}).limit(limit);
     }
 
     createOrUpdateWebhook(newFieldValues){
