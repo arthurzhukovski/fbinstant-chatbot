@@ -34,7 +34,6 @@ class WebhookController {
         }catch (error) {
             res.status(400).json({ok: false, msg: `Input data validation failed: ${error.message}`});
         }
-        //todo: determine how to properly connect player with webhook (currently it's assumed that webhookData.playerId equals target player's instantId)
         let player;
         try {
             player = await this.playerService.getPlayer(webhookData.playerId);

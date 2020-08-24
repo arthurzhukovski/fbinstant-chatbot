@@ -24,8 +24,7 @@ class WebhookService{
     }
 
     createOrUpdateWebhook(newFieldValues){
-        //todo: find out which field should be the primary key
-        return Webhook.updateOne({ senderId: newFieldValues.senderId }, newFieldValues, { upsert: true, setDefaultsOnInsert: true });
+        return Webhook.updateOne({ playerId: newFieldValues.playerId }, newFieldValues, { upsert: true, setDefaultsOnInsert: true });
     }
 
     fetchAndValidateNewWebhookData(rawData){

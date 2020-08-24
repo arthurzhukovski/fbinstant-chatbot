@@ -13,7 +13,6 @@ class ScheduleService{
     }
 
     getDefaultTimeToSendAt(tzOffset){
-        //todo: find out how to get timezone; find out how to connect player with webhook (sender id with player id)
         return this.getTimeToSendAt(0, tzOffset);
     }
 
