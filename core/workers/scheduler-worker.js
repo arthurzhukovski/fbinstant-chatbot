@@ -1,5 +1,7 @@
 const Worker = require('./worker');
 const NotificationQueue = require('../services/notification-queue');
+const WebhookService = require('../services/webhook-service');
+const ITEMS_PER_BATCH_LIMIT = 1000;
 
 class SchedulerWorker extends Worker{
     constructor(intervalInMs, workerName, notificationListName){
@@ -8,24 +10,34 @@ class SchedulerWorker extends Worker{
         this.notificationQueue = new NotificationQueue(process.env.REDIS_HOST, process.env.REDIS_PORT);
         this.notificationQueue.init();
         this.listName = notificationListName;
+        this.webhookService = new WebhookService();
     }
 
     async schedulingLoopIteration(){
-        let result = {ok: true, message: ""};
+        let result = {ok: true, msg: ""};
         if (this.notificationQueue.isUp){
-            const messageToSend = {name: "Test", dt: Date.now()};
-            const queuePushResponse = await this.notificationQueue.push(this.listName, messageToSend);
-            if (queuePushResponse){
-                result.message = `Successful push operation on list "${this.listName}". Amount of items: ${queuePushResponse}. Pushed item: ${JSON.stringify(messageToSend)}`;
-            }else{
-                result.ok = false;
-                result.message = `Failed push operation on list "${this.listName}". Failed item: ${JSON.stringify(messageToSend)}`;
+            let messagesToSend;
+            try{
+                messagesToSend =  await this.fetchMessagesToSend();
+                const queuePushResponse = await this.notificationQueue.pushMultiple(this.listName, messagesToSend);
+                if (queuePushResponse){
+                    result.msg = `Successful push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
+                }else{
+                    result.ok = false;
+                    result.msg = `Failed push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
+                }
+            }catch(error){
+                console.error(error);
             }
         }else{
             result.ok = false;
-            result.message = 'Doing nothing as the queue is down'
+            result.msg = 'Doing nothing as the queue is down'
         }
         return result;
+    }
+
+    async fetchMessagesToSend(){
+        return this.webhookService.getWebhooksForSending(ITEMS_PER_BATCH_LIMIT);
     }
 }
 module.exports = SchedulerWorker;

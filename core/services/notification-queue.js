@@ -42,6 +42,17 @@ class NotificationQueue {
         }
     }
 
+    async pushMultiple(listName, notificationObjects){
+        if(notificationObjects){
+            if (Array.isArray(notificationObjects)){
+                notificationObjects = notificationObjects.map(notification => JSON.stringify(notification));
+            }
+            return await this.rpushWithPromise(listName, notificationObjects);
+        } else {
+            return Promise.reject(new Error('NotificationObjects parameter must contain an array'));
+        }
+    }
+
     async pop(listName){
         const rawResponse = await this.lpopWithPromise(listName);
         try {

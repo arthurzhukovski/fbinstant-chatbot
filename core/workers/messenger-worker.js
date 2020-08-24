@@ -1,5 +1,6 @@
 const Worker = require('./worker');
 const NotificationQueue = require('../services/notification-queue');
+const ITEMS_PER_BATCH_LIMIT = 1;
 
 class MessengerWorker extends Worker{
     constructor(intervalInMs, workerName, notificationListName){
@@ -11,17 +12,17 @@ class MessengerWorker extends Worker{
     }
 
     async messagingLoopIteration(){
-        let result = {ok: true, message: ""};
+        let result = {ok: true, msg: ""};
         if (this.notificationQueue.isUp){
             const messageObjectFromQueue = await this.notificationQueue.pop(this.listName);
             if (messageObjectFromQueue){
-                result.message = `Successfully popped ${JSON.stringify(messageObjectFromQueue)} from list "${this.listName}"`;
+                result.msg = `Successfully popped ${messageObjectFromQueue.senderId} from list "${this.listName}"`;
             }else{
-                result.message = false;
+                result.msg = false;
             }
         }else{
             result.ok = false;
-            result.message = 'Doing nothing as the queue is down'
+            result.msg = 'Doing nothing as the queue is down';
         }
         return result;
     }

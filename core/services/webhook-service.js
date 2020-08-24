@@ -1,4 +1,5 @@
 const Webhook = require('../models/webhook');
+const Player = require('../models/player');
 
 class WebhookService{
     verifyHook(verificationToken, params){
@@ -18,7 +19,7 @@ class WebhookService{
         }
     }
 
-    getWebhooksForSending(limit, dateObjectToFilter){
+    getWebhooksForSending(limit, dateObjectToFilter = new Date()){
         return Webhook.find({sendAt: {$lte: dateObjectToFilter.getTime()}}).limit(limit).populate('player');
     }
 

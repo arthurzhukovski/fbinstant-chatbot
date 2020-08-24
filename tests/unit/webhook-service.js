@@ -95,6 +95,4 @@ describe('WebhookService', function () {
             assert.typeOf(result[0].player.tzOffset, 'number');
         });
     });
-
-
 });
