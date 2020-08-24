@@ -12,7 +12,7 @@ class PlayerService {
     }
 
     getPlayer(instantId){
-        return Player.findOne({instantId: instantId}, {_id: 0});
+        return Player.findOne({instantId: instantId});
     }
 
     fetchPlayerDataFromRawInput(rawData){

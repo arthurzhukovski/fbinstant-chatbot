@@ -19,7 +19,7 @@ class WebhookService{
     }
 
     getWebhooksForSending(limit, dateObjectToFilter){
-        return Webhook.find({sendAt: {$lte: dateObjectToFilter.getTime()}}).limit(limit);
+        return Webhook.find({sendAt: {$lte: dateObjectToFilter.getTime()}}).limit(limit).populate('player');
     }
 
     createOrUpdateWebhook(newFieldValues){

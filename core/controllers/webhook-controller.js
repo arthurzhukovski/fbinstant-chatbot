@@ -35,16 +35,14 @@ class WebhookController {
             res.status(400).json({ok: false, msg: `Input data validation failed: ${error.message}`});
         }
         //todo: determine how to properly connect player with webhook (currently it's assumed that webhookData.playerId equals target player's instantId)
-        let tzOffset;
+        let player;
         try {
-            const player = await this.playerService.getPlayer(webhookData.playerId);
-            tzOffset = player ? player.tzOffset : 0;
+            player = await this.playerService.getPlayer(webhookData.playerId);
         }catch(error){
-            tzOffset = 0;
             console.error(error);
         }
         try{
-            const newWebhook = {...webhookData, ...{hookedAt: Date.now(), sentAfterHook: 0, sendAt: this.scheduleService.getDefaultTimeToSendAt(tzOffset)}};
+            const newWebhook = {...webhookData, ...{player: player ? player : null, hookedAt: Date.now(), sentAfterHook: 0, sendAt: this.scheduleService.getDefaultTimeToSendAt(player ? player.tzOffset : 0)}};
 
             this.webhookService.createOrUpdateWebhook(newWebhook).then(() => {
                 res.status(200).end();

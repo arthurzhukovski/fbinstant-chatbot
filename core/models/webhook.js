@@ -32,6 +32,10 @@ const WebhookSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now()
+    },
+    player: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Player'
     }
 });
 

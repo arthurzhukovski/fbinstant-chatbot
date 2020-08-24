@@ -69,6 +69,7 @@ describe('WebhookService', function () {
             assert.equal(error.message, 'Field "entry" must be an array')
         }
     });
+
     this.timeout(5000);
     it('WebhookService.getWebhooksForSending with parameter "limit" = 4 should return array with 4 items and its first value sendDate timestamp should be below current timestamp', function () {
         const limit = 4;
@@ -76,6 +77,22 @@ describe('WebhookService', function () {
         return webhookService.getWebhooksForSending(limit, currentDate).then(result => {
             assert.equal(result.length, limit);
             assert.isAtMost(result[0].sendAt.getTime(), currentDate.getTime());
+        });
+    });
+
+    it('WebhookService.getWebhooksForSending return value should contain field "locale" of type string', function () {
+        const limit = 1;
+        const currentDate = new Date();
+        return webhookService.getWebhooksForSending(limit, currentDate).then(result => {
+            assert.typeOf(result[0].player.locale, 'string');
+        });
+    });
+
+    it('WebhookService.getWebhooksForSending return value should contain field "tzOffset" of type string', function () {
+        const limit = 1;
+        const currentDate = new Date();
+        return webhookService.getWebhooksForSending(limit, currentDate).then(result => {
+            assert.typeOf(result[0].player.tzOffset, 'number');
         });
     });
 
