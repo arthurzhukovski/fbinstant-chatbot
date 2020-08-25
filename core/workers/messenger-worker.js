@@ -16,7 +16,7 @@ class MessengerWorker extends Worker{
         if (this.notificationQueue.isUp){
             const messageObjectFromQueue = await this.notificationQueue.pop(this.listName);
             if (messageObjectFromQueue){
-                result.msg = `Successfully popped ${messageObjectFromQueue.senderId} from list "${this.listName}"`;
+                result.msg = `Successfully popped ${JSON.stringify(messageObjectFromQueue)} from list "${this.listName}"`;
             }else{
                 result.msg = false;
             }

@@ -5,7 +5,6 @@ class ScheduleService{
         this.sendingHourLimits = {min: 7, max: 23};
         if(process.env.SCHEDULE){
             this.schedule = process.env.SCHEDULE.split(',').map(value => parseInt(value.trim()));
-            console.log(this.schedule);
         }else {
             this.schedule = [5, 24, 72, 168, 672];
             console.error('ScheduleService: process.env.SCHEDULE is not defined');

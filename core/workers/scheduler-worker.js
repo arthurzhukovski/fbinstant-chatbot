@@ -1,6 +1,8 @@
 const Worker = require('./worker');
 const NotificationQueue = require('../services/notification-queue');
 const WebhookService = require('../services/webhook-service');
+const PlayerService = require('../services/player-service');
+const MessageGenerator = require('../../addons/app-message-generator');
 const ITEMS_PER_BATCH_LIMIT = 1000;
 
 class SchedulerWorker extends Worker{
@@ -11,6 +13,8 @@ class SchedulerWorker extends Worker{
         this.notificationQueue.init();
         this.listName = notificationListName;
         this.webhookService = new WebhookService();
+        this.playerService = new PlayerService();
+        this.messageGenerator = new MessageGenerator();
     }
 
     async schedulingLoopIteration(){
@@ -37,7 +41,15 @@ class SchedulerWorker extends Worker{
     }
 
     async fetchMessagesToSend(){
-        return this.webhookService.getWebhooksForSending(ITEMS_PER_BATCH_LIMIT);
+        const webhooks = await this.webhookService.getWebhooksForSending(ITEMS_PER_BATCH_LIMIT);
+        const messagePromises = webhooks.map(async wh => {
+
+            if (wh.player.friends && wh.player.friends.length > 0){
+                wh.player.friendsObjects = await this.playerService.getFriendsByIdList(wh.player.friends);
+            }
+            return this.messageGenerator.generateMessage(wh);
+        });
+        return Promise.all(messagePromises);
     }
 }
 module.exports = SchedulerWorker;

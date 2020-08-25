@@ -33,6 +33,7 @@ describe('NotificationQueue', function () {
 
     let pushedObject = {name: 'Value from unit test', dt: Date.now()};
     it('NotificationQueue.push() should return number of rows after insertion and it should be >= 1', function () {
+        notificationQueue.redisClient.flushall();
         return notificationQueue.push('notifications', pushedObject).then( result => {
             assert.typeOf(result, 'number');
             assert.isAtLeast(result, 1);
@@ -46,6 +47,14 @@ describe('NotificationQueue', function () {
             assert.equal(result.name, pushedObject.name);
         });
 
+    });
+
+    it('NotificationQueue.pushMultiple() should return number of rows after insertion and it should be = 2', function () {
+        notificationQueue.redisClient.flushall();
+        return notificationQueue.pushMultiple('notifications', [pushedObject, pushedObject]).then( result => {
+            assert.typeOf(result, 'number');
+            assert.equal(result, 2);
+        });
     });
 
 });
