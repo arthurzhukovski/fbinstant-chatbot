@@ -37,7 +37,7 @@ class NotificationQueue {
                 notificationObject = JSON.stringify(notificationObject);
             }
             return  await this.rpushWithPromise(listName, notificationObject);
-        } else {
+        }else{
             return Promise.reject(new Error('Notification queue item must not evaluate to false'));
         }
     }
@@ -48,7 +48,7 @@ class NotificationQueue {
                 notificationObjects = notificationObjects.map(notification => JSON.stringify(notification));
             }
             return await this.rpushWithPromise(listName, notificationObjects);
-        } else {
+        }else{
             return Promise.reject(new Error('NotificationObjects parameter must contain an array'));
         }
     }

@@ -2,6 +2,7 @@ const Webhook = require('../models/webhook');
 const Player = require('../models/player');
 
 class WebhookService{
+
     verifyHook(verificationToken, params){
         if (params){
             let mode = params['hub.mode'];
@@ -20,7 +21,7 @@ class WebhookService{
     }
 
     getWebhooksForSending(limit, dateObjectToFilter = new Date()){
-        return Webhook.find({sendAt: {$lte: dateObjectToFilter.getTime()}, player: {$ne: null}}).limit(limit).populate('player');
+        return Webhook.find({isInQueue: false, sendAt: {$lte: dateObjectToFilter.getTime()}, player: {$ne: null}}).limit(limit).populate('player');
     }
 
     createOrUpdateWebhook(newFieldValues){
@@ -49,7 +50,7 @@ class WebhookService{
                                 playerId: targetObject.player_id,
                                 contextId: targetObject.context_id,
                             }
-                        } else
+                        }else
                             throw new Error('Field "player_id" must be non-empty string');
 
                     }else
@@ -60,6 +61,34 @@ class WebhookService{
                 throw new Error('Field "entry" must be an array');
         }else
             throw new Error('Field "object" must contain value "page"');
+    }
+
+    setInQueueStatus(webhooks, status){
+        const whPromises = webhooks.map(async wh => {
+            return Webhook.updateOne({playerId: wh.playerId}, {isInQueue: status});
+        });
+        return Promise.all(whPromises);
+    }
+
+    async processWebhookAfterSendingPlayerMessage(webhook, scheduleService){
+        const amountOfSentMessages = webhook.sentAfterHook + 1;
+        console.log(amountOfSentMessages);
+        if (amountOfSentMessages >= scheduleService.schedule.length){
+            return this.deleteWebhook(webhook.playerId);
+        }else{
+            const tzOffset = webhook.player ? webhook.player.tzOffset : 0;
+            return Webhook.findOne({playerId: webhook.playerId}).then(webhookFromDb => {
+                webhookFromDb.sentAfterHook = amountOfSentMessages;
+                webhookFromDb.sendAt = scheduleService.getTimeToSendAt(amountOfSentMessages, tzOffset, webhookFromDb.hookedAt.getTime());
+                webhookFromDb.save();
+            });
+        }
+    }
+
+    deleteWebhook(playerId){
+        //todo: implement actual deletion of an item
+        //return Webhook.deleteOne({playerId: webhook.playerId});
+        return Webhook.updateOne({playerId: playerId}, {sentAfterHook: 0});
     }
 }
 

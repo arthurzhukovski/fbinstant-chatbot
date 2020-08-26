@@ -30,7 +30,7 @@ class Worker{
     }
 
     formatMessage(message){
-        return !message ? false : `[${this.name}] at [${new Date().toISOString()}] (executed after ${this.intervalInMs/MILLISECONDS_PER_SECOND} seconds): ${message}`;
+        return !message ? false : `[${this.name}] at [${new Date().toISOString()}] (executed after delay of ${this.intervalInMs/MILLISECONDS_PER_SECOND} second(s)): ${message}`;
     }
 }
 module.exports = Worker;

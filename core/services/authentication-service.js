@@ -25,7 +25,7 @@ class AuthenticationService{
             }
 
             return payload;
-        } else{
+        }else{
             throw new Error('Unable to find app secret');
         }
     }
@@ -35,7 +35,7 @@ class AuthenticationService{
             const encodedPayload = Base64.stringify(Utf8.parse(JSON.stringify(payload)));
             const signature = this.base64ToWebSafe(Base64.stringify(HmacSHA256(encodedPayload, process.env.APP_SECRET)));
             return `${signature}.${encodedPayload}`;
-        } else{
+        }else{
             throw new Error('Unable to find app secret');
         }
     }

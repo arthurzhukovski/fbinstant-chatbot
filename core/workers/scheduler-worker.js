@@ -22,13 +22,24 @@ class SchedulerWorker extends Worker{
         if (this.notificationQueue.isUp){
             let messagesToSend;
             try{
-                messagesToSend =  await this.fetchMessagesToSend();
-                const queuePushResponse = await this.notificationQueue.pushMultiple(this.listName, messagesToSend);
-                if (queuePushResponse){
-                    result.msg = `Successful push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
+                const webhooks = await this.webhookService.getWebhooksForSending(ITEMS_PER_BATCH_LIMIT);
+                messagesToSend =  await this.fetchMessagesToSend(webhooks);
+                if (messagesToSend && messagesToSend.length){
+                    const queuePushResponse = await this.notificationQueue.pushMultiple(this.listName, messagesToSend);
+                    if (queuePushResponse){
+                        try{
+                            await this.webhookService.setInQueueStatus(webhooks, true);
+                            result.msg = `Successful push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
+                        }catch (error) {
+                            result.ok = false;
+                            result.msg = `Items pushed successfully, but "in queue" status update failed: ${error}`;
+                        }
+                    }else{
+                        result.ok = false;
+                        result.msg = `Failed push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
+                    }
                 }else{
                     result.ok = false;
-                    result.msg = `Failed push operation on list "${this.listName}". Amount of items: ${messagesToSend.length}`;
                 }
             }catch(error){
                 console.error(error);
@@ -40,14 +51,14 @@ class SchedulerWorker extends Worker{
         return result;
     }
 
-    async fetchMessagesToSend(){
-        const webhooks = await this.webhookService.getWebhooksForSending(ITEMS_PER_BATCH_LIMIT);
+    async fetchMessagesToSend(webhooks){
         const messagePromises = webhooks.map(async wh => {
-
             if (wh.player.friends && wh.player.friends.length > 0){
                 wh.player.friendsObjects = await this.playerService.getFriendsByIdList(wh.player.friends);
             }
-            return this.messageGenerator.generateMessage(wh);
+            let message = this.messageGenerator.generateMessage(wh);
+            message.webhook = wh;
+            return message;
         });
         return Promise.all(messagePromises);
     }

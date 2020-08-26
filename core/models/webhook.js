@@ -13,6 +13,10 @@ const WebhookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isInQueue:{
+        type: Boolean,
+        default: false
+    },
     hookedAt: {
         type: Date,
         required: true
