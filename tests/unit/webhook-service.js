@@ -95,4 +95,11 @@ describe('WebhookService', function () {
             assert.typeOf(result[0].player.tzOffset, 'number');
         });
     });
+
+    it('WebhookService.deleteOne should delete record from db and return an object with field "deletedCount" equal to 1', function () {
+        return webhookService.deleteWebhook("test_sender_id").then(result => {
+            console.log(result);
+            assert.equal(result.deletedCount, 1);
+        });
+    });
 });

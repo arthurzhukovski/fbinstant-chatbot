@@ -52,6 +52,9 @@ class SchedulerWorker extends Worker{
     }
 
     async fetchMessagesToSend(webhooks){
+        if (!webhooks || !webhooks.length)
+            return [];
+
         const messagePromises = webhooks.map(async wh => {
             if (wh.player.friends && wh.player.friends.length > 0){
                 wh.player.friendsObjects = await this.playerService.getFriendsByIdList(wh.player.friends);

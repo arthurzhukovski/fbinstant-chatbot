@@ -87,8 +87,8 @@ class WebhookService{
 
     deleteWebhook(playerId){
         //todo: implement actual deletion of an item
-        //return Webhook.deleteOne({playerId: webhook.playerId});
-        return Webhook.updateOne({playerId: playerId}, {sentAfterHook: 0});
+        return Webhook.deleteOne({playerId: playerId});
+        //return Webhook.updateOne({playerId: playerId}, {sentAfterHook: 0});
     }
 }
 
