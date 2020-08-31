@@ -71,17 +71,21 @@ class WebhookService{
     }
 
     async processWebhookAfterSendingPlayerMessage(webhook, scheduleService){
-        const amountOfSentMessages = webhook.sentAfterHook + 1;
-        console.log(amountOfSentMessages);
-        if (amountOfSentMessages >= scheduleService.schedule.length){
-            return this.deleteWebhook(webhook.playerId);
-        }else{
-            const tzOffset = webhook.player ? webhook.player.tzOffset : 0;
-            return Webhook.findOne({playerId: webhook.playerId}).then(webhookFromDb => {
+        const webhookFromDb = await Webhook.findOne({playerId: webhook.playerId});
+        if (webhookFromDb.hookedAt.toString() === webhook.hookedAt.toString()){
+            const amountOfSentMessages = webhook.sentAfterHook + 1;
+            console.log(amountOfSentMessages);
+            if (amountOfSentMessages >= scheduleService.schedule.length){
+                return this.deleteWebhook(webhook.playerId);
+            }else{
+                const tzOffset = webhook.player ? webhook.player.tzOffset : 0;
                 webhookFromDb.sentAfterHook = amountOfSentMessages;
                 webhookFromDb.sendAt = scheduleService.getTimeToSendAt(amountOfSentMessages, tzOffset, webhookFromDb.hookedAt.getTime());
-                webhookFromDb.save();
-            });
+                return webhookFromDb.save();
+            }
+        }else{
+            console.log('Webhook has been updated while being in a queue');
+            return false;
         }
     }
 

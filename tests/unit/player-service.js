@@ -2,7 +2,7 @@ require('dotenv').config();
 const assert = require('chai').assert;
 const PlayerService = require('../../core/services/player-service');
 describe('PlayerService', function () {
-    const amountOfPlayers = 5;
+    const amountOfPlayers = 6;
     const playerService = new PlayerService();
     const basePlayerFields = {
         "instantId": "test_id_",
