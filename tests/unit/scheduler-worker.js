@@ -29,7 +29,6 @@ describe('SchedulerWorker', async function () {
 
     it('SchedulerWorker.fetchMessagesToSend() object with "playerId" equal to "instant_id_222" from the returned array must have a field "friends" that contains an array of objects', async function () {
         let result =  worker.fetchMessagesToSend(webhooks);
-        console.log(result.find(p => p.playerId === 'instant_id_2212'));
         assert.typeOf(result.player, 'object');
         assert.typeOf(result.player.friends, 'array');
         assert.isAbove(result.player.friends.length, 0);

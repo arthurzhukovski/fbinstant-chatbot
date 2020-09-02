@@ -57,4 +57,12 @@ describe('NotificationQueue', function () {
         });
     });
 
+
+    it('NotificationQueue.getQueueLength() should return amount of items in queue and it should be = 5', async function () {
+        notificationQueue.redisClient.flushall();
+        await notificationQueue.pushMultiple('notifications', [pushedObject, pushedObject, pushedObject, pushedObject, pushedObject]);
+        const len = await notificationQueue.getQueueLength('notifications');
+        assert.equal(len, 5);
+    });
+
 });

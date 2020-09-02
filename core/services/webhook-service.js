@@ -74,7 +74,6 @@ class WebhookService{
         const webhookFromDb = await Webhook.findOne({playerId: webhook.playerId});
         if (webhookFromDb.hookedAt.toString() === webhook.hookedAt.toString()){
             const amountOfSentMessages = webhook.sentAfterHook + 1;
-            console.log(amountOfSentMessages);
             if (amountOfSentMessages >= scheduleService.schedule.length){
                 return this.deleteWebhook(webhook.playerId);
             }else{

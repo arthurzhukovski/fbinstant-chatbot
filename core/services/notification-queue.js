@@ -12,6 +12,7 @@ class NotificationQueue {
         this.setRedisConnectionStatusHandlers(this.redisClient);
         this.lpopWithPromise = promisify(this.redisClient.lpop).bind(this.redisClient);
         this.rpushWithPromise = promisify(this.redisClient.rpush).bind(this.redisClient);
+        this.llenWithPromise = promisify(this.redisClient.llen).bind(this.redisClient);
     }
 
     connectToRedis(host, port){
@@ -60,6 +61,10 @@ class NotificationQueue {
         }catch (error) {
             return rawResponse;
         }
+    }
+
+    getQueueLength(listName){
+        return this.llenWithPromise(listName);
     }
 
     setRedisConnectionStatusHandlers(client){

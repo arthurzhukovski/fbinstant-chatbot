@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV === 'development'){
+    require('dotenv').config();
+}
+
 const {SchedulerWorker} = require('../core/workers/index');
 
 const iterationIntervalMs = process.env.ITERATION_INTERVAL || 3000;

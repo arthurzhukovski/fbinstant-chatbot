@@ -100,7 +100,6 @@ describe('WebhookService', function () {
         const limit = 4;
         const currentDate = new Date();
         const result = await webhookService.getWebhooksForSending(limit, currentDate);
-        console.log(result);
         assert.equal(result.length, limit);
         assert.isAtMost(result[0].sendAt.getTime(), currentDate.getTime());
     });
@@ -132,7 +131,6 @@ describe('WebhookService', function () {
         const newWebhook = await Webhook.findOne({playerId: playedId});
 
         return webhookService.processWebhookAfterSendingPlayerMessage(newWebhook, scheduleService).then(result => {
-            console.log(result);
             assert.typeOf(result, 'object');
             assert.equal(result.playerId, playedId);
         });
@@ -142,7 +140,6 @@ describe('WebhookService', function () {
         const newWebhook = await Webhook.findOne({playerId: 'test_id_1'});
         newWebhook.hookedAt = new Date('1984-01-01');
         return webhookService.processWebhookAfterSendingPlayerMessage(newWebhook, scheduleService).then(result => {
-            console.log(result);
             assert.typeOf(result, 'boolean');
             assert.equal(result, false);
         });
@@ -153,7 +150,6 @@ describe('WebhookService', function () {
         let newWebhook = await Webhook.findOne({playerId: playedId});
         newWebhook.sentAfterHook = Number.MAX_SAFE_INTEGER - 1;
         return webhookService.processWebhookAfterSendingPlayerMessage(newWebhook, scheduleService).then(result => {
-            console.log(result);
             assert.typeOf(result, 'object');
             assert.equal(result.deletedCount, 1);
         });
