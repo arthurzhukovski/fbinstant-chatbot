@@ -60,9 +60,7 @@ class MessengerWorker extends Worker{
     updateQueueLengthForNotificationBot(){
         this.notificationQueue.llenWithPromise('notifications').then(queueLength => {
             this.telegramService.setSystemMetaInfo('queueLength', queueLength);
-
             const warningTimeoutExceeded = Date.now() - this.lastWarningSentAt  > this.warningIntervalMs;
-            console.log(warningTimeoutExceeded);
             if (parseInt(queueLength) > this.maxQueueLength && warningTimeoutExceeded){
                 this.lastWarningSentAt = Date.now();
                 this.telegramService.sendWarning(`Redis queue is too long (${queueLength}/${this.maxQueueLength})!`);

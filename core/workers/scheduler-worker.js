@@ -59,9 +59,7 @@ class SchedulerWorker extends Worker{
             if (wh.player.friends && wh.player.friends.length > 0){
                 wh.player.friendsObjects = await this.playerService.getFriendsByIdList(wh.player.friends);
             }
-            let message = this.messageGenerator.generateMessage(wh);
-            message.webhook = wh;
-            return message;
+            return this.messageGenerator.generateMessage(wh);
         });
         return Promise.all(messagePromises);
     }

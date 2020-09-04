@@ -4,7 +4,7 @@ const MessageGenerator = require('../../core/utils/message-generator');
 
 describe('MessageGenerator', function () {
     const messageGenerator = new MessageGenerator();
-    let webhook = {"senderId":"<PSID>","contextId":"cid","createdAt":{"$date":"2020-08-19T13:16:59.038Z"},"hookedAt":{"$date":"2020-08-20T13:29:01.131Z"},"playerId":"instant_id_111","sendAt":{"$date":"2020-08-20T18:29:01.131Z"},"sentAfterHook":0};
+    let webhook = {"senderId":"<PSID>","contextId":"cid","createdAt": new Date("2020-08-19T13:16:59.038Z"),"hookedAt":new Date("2020-08-20T13:29:01.131Z"),"playerId":"instant_id_111","sendAt":new Date("2020-08-20T18:29:01.131Z"),"sentAfterHook":0};
     webhook.player = {lastPushType: 'lagging', locale: 'ru_RU', friendsObjects: [{name: 'Bob'}, {name: 'Alice'}]};
 
     const message = messageGenerator.generateMessage(webhook);
@@ -80,5 +80,18 @@ describe('MessageGenerator', function () {
         assert.isAbove(result.name.length, 0);
     });
 
+
+    it('MessageGenerator.getDayAtPlayground() should return a positive integer when a correct parameter is passed', function () {
+        let dt = new Date();
+        const createdAt = (dt.setDate(dt.getDate()-5));
+        let result = messageGenerator.getDayAtPlayground(createdAt);
+        assert.typeOf(result, 'number');
+        assert.equal(result, 5);
+    });
+
+    it('MessageGenerator.generateMessage() should return a message object with non-empty "playground.dayNumber" property of type number with value above 0', function () {
+        assert.typeOf(message.playground.dayNumber, 'number');
+        assert.isAbove(message.playground.dayNumber, 0);
+    });
 
 });

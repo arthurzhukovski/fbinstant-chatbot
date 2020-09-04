@@ -1,4 +1,5 @@
 const MESSAGE_TEMPLATES = require('../../addons/message-templates');
+const MS_PER_DAY = 86400000;
 
 class MessageGenerator{
 
@@ -19,11 +20,12 @@ class MessageGenerator{
                 type: messageContent.type
             },
             playground: {
-                dayNumber: 0,
+                dayNumber: this.getDayAtPlayground(webhook.createdAt),
                 //todo: determine from where to get this value:
                 opponentId: null,
                 contextId: webhook.contextId
-            }
+            },
+            webhook: webhook
         };
     }
 
@@ -71,6 +73,10 @@ class MessageGenerator{
     getTextTemplateByLocale(textArray, locale){
         const textTemplate = textArray.find(t => t.locale === locale);
         return textTemplate ? textTemplate.value : textArray[0].value;
+    }
+
+    getDayAtPlayground(createdAtTimestamp){
+        return Math.floor((Date.now() - createdAtTimestamp) / MS_PER_DAY);
     }
 
 }
