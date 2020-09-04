@@ -77,7 +77,7 @@ class TelegramService{
     }
 
     formatUptime(uptimeInMs){
-        const daysPassed = Math.round(uptimeInMs / MS_PER_DAY);
+        const daysPassed = Math.floor(uptimeInMs / MS_PER_DAY);
         const isoStringTimeStartIndex = 11;
         const isoTimeSubstringLength = 8;
         return uptimeInMs ? `${daysPassed}d${new Date(uptimeInMs).toISOString().substr(isoStringTimeStartIndex, isoTimeSubstringLength)}` : 0;

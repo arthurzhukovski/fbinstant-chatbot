@@ -36,6 +36,11 @@ describe('TelegramService', function () {
         assert.equal(res, '0d00:00:00');
     });
 
+    it('TelegramService.formatUptime for the value 145000000 should return value that starts with "1d"', async function() {
+        const res = tg.formatUptime(145000000);
+        assert.equal(res.substring(0, 2), '1d');
+    });
+
     it('TelegramService.setSystemMetaInfo should set specified property called "test" inside object "systemMetaInfo"', async function() {
         tg.setSystemMetaInfo('test', 'testval');
         assert.equal(tg.systemMetaInfo.test, 'testval');
